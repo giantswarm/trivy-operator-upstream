@@ -27,8 +27,12 @@ type Config struct {
 	MetricsFindingsEnabled                       bool           `env:"OPERATOR_METRICS_FINDINGS_ENABLED" envDefault:"true"`
 	MetricsVulnerabilityId                       bool           `env:"OPERATOR_METRICS_VULN_ID_ENABLED" envDefault:"false"`
 	MetricsExposedSecretInfo                     bool           `env:"OPERATOR_METRICS_EXPOSED_SECRET_INFO_ENABLED" envDefault:"false"`
+	MetricsConfigAuditInfo                       bool           `env:"OPERATOR_METRICS_CONFIG_AUDIT_INFO_ENABLED" envDefault:"false"`
+	MetricsRbacAssessmentInfo                    bool           `env:"OPERATOR_METRICS_RBAC_ASSESSMENT_INFO_ENABLED" envDefault:"false"`
+	MetricsInfraAssessmentInfo                   bool           `env:"OPERATOR_METRICS_INFRA_ASSESSMENT_INFO_ENABLED" envDefault:"false"`
 	HealthProbeBindAddress                       string         `env:"OPERATOR_HEALTH_PROBE_BIND_ADDRESS" envDefault:":9090"`
 	VulnerabilityScannerEnabled                  bool           `env:"OPERATOR_VULNERABILITY_SCANNER_ENABLED" envDefault:"true"`
+	SbomGenerationEnable                         bool           `env:"OPERATOR_SBOM_GENERATION_ENABLED" envDefault:"true"`
 	VulnerabilityScannerScanOnlyCurrentRevisions bool           `env:"OPERATOR_VULNERABILITY_SCANNER_SCAN_ONLY_CURRENT_REVISIONS" envDefault:"true"`
 	ScannerReportTTL                             *time.Duration `env:"OPERATOR_SCANNER_REPORT_TTL" envDefault:"24h"`
 	ClusterComplianceEnabled                     bool           `env:"OPERATOR_CLUSTER_COMPLIANCE_ENABLED" envDefault:"true"`

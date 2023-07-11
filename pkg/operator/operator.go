@@ -3,6 +3,9 @@ package operator
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/aquasecurity/trivy-operator/pkg/compliance"
 	"github.com/aquasecurity/trivy-operator/pkg/configauditreport"
 	"github.com/aquasecurity/trivy-operator/pkg/configauditreport/controller"
@@ -15,6 +18,7 @@ import (
 	"github.com/aquasecurity/trivy-operator/pkg/operator/jobs"
 	"github.com/aquasecurity/trivy-operator/pkg/plugins"
 	"github.com/aquasecurity/trivy-operator/pkg/rbacassessment"
+	"github.com/aquasecurity/trivy-operator/pkg/sbomreport"
 	"github.com/aquasecurity/trivy-operator/pkg/trivyoperator"
 	"github.com/aquasecurity/trivy-operator/pkg/vulnerabilityreport"
 	vcontroller "github.com/aquasecurity/trivy-operator/pkg/vulnerabilityreport/controller"
@@ -23,12 +27,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
-	"strconv"
 )
 
 var (
@@ -72,13 +74,13 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 		// Add support for OwnNamespace set in OPERATOR_NAMESPACE (e.g. `trivy-operator`)
 		// and OPERATOR_TARGET_NAMESPACES (e.g. `trivy-operator`).
 		setupLog.Info("Constructing client cache", "namespace", targetNamespaces[0])
-		options.Namespace = targetNamespaces[0]
+		options.Cache.Namespaces = []string{targetNamespaces[0]}
 	case etc.SingleNamespace:
 		// Add support for SingleNamespace set in OPERATOR_NAMESPACE (e.g. `trivy-operator`)
 		// and OPERATOR_TARGET_NAMESPACES (e.g. `default`).
 		cachedNamespaces := append(targetNamespaces, operatorNamespace)
 		setupLog.Info("Constructing client cache", "namespaces", cachedNamespaces)
-		options.NewCache = cache.MultiNamespacedCacheBuilder(cachedNamespaces)
+		options.Cache.Namespaces = cachedNamespaces
 	case etc.MultiNamespace:
 		// Add support for MultiNamespace set in OPERATOR_NAMESPACE (e.g. `trivy-operator`)
 		// and OPERATOR_TARGET_NAMESPACES (e.g. `default,kube-system`).
@@ -86,7 +88,7 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 		// More: https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/cache#MultiNamespacedCacheBuilder
 		cachedNamespaces := append(targetNamespaces, operatorNamespace)
 		setupLog.Info("Constructing client cache", "namespaces", cachedNamespaces)
-		options.NewCache = cache.MultiNamespacedCacheBuilder(cachedNamespaces)
+		options.Cache.Namespaces = cachedNamespaces
 	case etc.AllNamespaces:
 		// Add support for AllNamespaces set in OPERATOR_NAMESPACE (e.g. `operators`)
 		// and OPERATOR_TARGET_NAMESPACES left blank.
@@ -125,12 +127,11 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 	if err != nil {
 		return err
 	}
-
-	trivyOperatorConfig, err := configManager.Read(context.Background())
+	compatibleObjectMapper, err := kube.InitCompatibleMgr()
 	if err != nil {
 		return err
 	}
-	compatibleObjectMapper, err := kube.InitCompatibleMgr(mgr.GetClient().RESTMapper())
+	trivyOperatorConfig, err := configManager.Read(context.Background())
 	if err != nil {
 		return err
 	}
@@ -142,10 +143,11 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 	logsReader := kube.NewLogsReader(clientSet)
 	secretsReader := kube.NewSecretsReader(mgr.GetClient())
 
-	if operatorConfig.VulnerabilityScannerEnabled || operatorConfig.ExposedSecretScannerEnabled {
+	if operatorConfig.VulnerabilityScannerEnabled || operatorConfig.ExposedSecretScannerEnabled || operatorConfig.SbomGenerationEnable {
 
 		trivyOperatorConfig.Set(trivyoperator.KeyVulnerabilityScannerEnabled, strconv.FormatBool(operatorConfig.VulnerabilityScannerEnabled))
 		trivyOperatorConfig.Set(trivyoperator.KeyExposedSecretsScannerEnabled, strconv.FormatBool(operatorConfig.ExposedSecretScannerEnabled))
+		trivyOperatorConfig.Set(trivyoperator.KeyGenerateSbom, strconv.FormatBool(operatorConfig.SbomGenerationEnable))
 
 		plugin, pluginContext, err := plugins.NewResolver().
 			WithBuildInfo(buildInfo).
@@ -180,6 +182,7 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 				vcontroller.NewHttpChecker()),
 			VulnerabilityReadWriter: vulnerabilityreport.NewReadWriter(&objectResolver),
 			ExposedSecretReadWriter: exposedsecretreport.NewReadWriter(&objectResolver),
+			SbomReadWriter:          sbomreport.NewReadWriter(&objectResolver),
 			SubmitScanJobChan:       make(chan vcontroller.ScanJobRequest, operatorConfig.ConcurrentScanJobsLimit),
 			ResultScanJobChan:       make(chan vcontroller.ScanJobResult, operatorConfig.ConcurrentScanJobsLimit),
 		}).SetupWithManager(mgr); err != nil {
@@ -194,46 +197,58 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 			LogsReader:              logsReader,
 			Plugin:                  plugin,
 			PluginContext:           pluginContext,
+			SbomReadWriter:          sbomreport.NewReadWriter(&objectResolver),
 			VulnerabilityReadWriter: vulnerabilityreport.NewReadWriter(&objectResolver),
 			ExposedSecretReadWriter: exposedsecretreport.NewReadWriter(&objectResolver),
 		}).SetupWithManager(mgr); err != nil {
 			return fmt.Errorf("unable to setup scan job  reconciler: %w", err)
 		}
+	}
 
-		if operatorConfig.ScannerReportTTL != nil {
-			ttlReconciler := &TTLReportReconciler{
-				Logger: ctrl.Log.WithName("reconciler").WithName("ttlreport"),
-				Config: operatorConfig,
-				Client: mgr.GetClient(),
-				Clock:  ext.NewSystemClock(),
-			}
-			if operatorConfig.ConfigAuditScannerEnabled {
-				plugin, pluginContextCofig, err := plugins.NewResolver().WithBuildInfo(buildInfo).
-					WithNamespace(operatorNamespace).
-					WithServiceAccountName(operatorConfig.ServiceAccount).
-					WithConfig(trivyOperatorConfig).
-					WithClient(mgr.GetClient()).
-					WithObjectResolver(&objectResolver).
-					GetConfigAuditPlugin()
-				if err != nil {
-					return fmt.Errorf("initializing %s plugin: %w", pluginContext.GetName(), err)
-				}
-				ttlReconciler.PluginContext = pluginContextCofig
-				ttlReconciler.PluginInMemory = plugin
-			}
-			if err = ttlReconciler.SetupWithManager(mgr); err != nil {
-				return fmt.Errorf("unable to setup TTLreport reconciler: %w", err)
-			}
+	if operatorConfig.ScannerReportTTL != nil {
+		_, pluginContext, err := plugins.NewResolver().
+			WithBuildInfo(buildInfo).
+			WithNamespace(operatorNamespace).
+			WithServiceAccountName(operatorConfig.ServiceAccount).
+			WithConfig(trivyOperatorConfig).
+			WithClient(mgr.GetClient()).
+			WithObjectResolver(&objectResolver).
+			GetVulnerabilityPlugin()
+		if err != nil {
+			return err
 		}
-
-		if operatorConfig.WebhookBroadcastURL != "" {
-			if err = (&webhook.WebhookReconciler{
-				Logger: ctrl.Log.WithName("reconciler").WithName("webhookreporter"),
-				Config: operatorConfig,
-				Client: mgr.GetClient(),
-			}).SetupWithManager(mgr); err != nil {
-				return fmt.Errorf("unable to setup webhookreporter: %w", err)
+		ttlReconciler := &TTLReportReconciler{
+			Logger: ctrl.Log.WithName("reconciler").WithName("ttlreport"),
+			Config: operatorConfig,
+			Client: mgr.GetClient(),
+			Clock:  ext.NewSystemClock(),
+		}
+		if operatorConfig.ConfigAuditScannerEnabled {
+			plugin, pluginContextCofig, err := plugins.NewResolver().WithBuildInfo(buildInfo).
+				WithNamespace(operatorNamespace).
+				WithServiceAccountName(operatorConfig.ServiceAccount).
+				WithConfig(trivyOperatorConfig).
+				WithClient(mgr.GetClient()).
+				WithObjectResolver(&objectResolver).
+				GetConfigAuditPlugin()
+			if err != nil {
+				return fmt.Errorf("initializing %s plugin: %w", pluginContext.GetName(), err)
 			}
+			ttlReconciler.PluginContext = pluginContextCofig
+			ttlReconciler.PluginInMemory = plugin
+		}
+		if err = ttlReconciler.SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("unable to setup TTLreport reconciler: %w", err)
+		}
+	}
+
+	if operatorConfig.WebhookBroadcastURL != "" {
+		if err = (&webhook.WebhookReconciler{
+			Logger: ctrl.Log.WithName("reconciler").WithName("webhookreporter"),
+			Config: operatorConfig,
+			Client: mgr.GetClient(),
+		}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("unable to setup webhookreporter: %w", err)
 		}
 	}
 
@@ -252,6 +267,10 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 		if err != nil {
 			return fmt.Errorf("initializing %s plugin: %w", pluginContext.GetName(), err)
 		}
+		var gitVersion string
+		if version, err := clientSet.ServerVersion(); err == nil {
+			gitVersion = strings.TrimPrefix(version.GitVersion, "v")
+		}
 		setupLog.Info("Enabling built-in configuration audit scanner")
 		if err = (&controller.ResourceController{
 			Logger:          ctrl.Log.WithName("resourcecontroller"),
@@ -264,6 +283,7 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 			RbacReadWriter:  rbacassessment.NewReadWriter(&objectResolver),
 			InfraReadWriter: infraassessment.NewReadWriter(&objectResolver),
 			BuildInfo:       buildInfo,
+			ClusterVersion:  gitVersion,
 		}).SetupWithManager(mgr); err != nil {
 			return fmt.Errorf("unable to setup resource controller: %w", err)
 		}
@@ -273,6 +293,7 @@ func Start(ctx context.Context, buildInfo trivyoperator.BuildInfo, operatorConfi
 			ObjectResolver: objectResolver,
 			PluginContext:  pluginContext,
 			PluginInMemory: plugin,
+			ClusterVersion: gitVersion,
 		}).SetupWithManager(mgr); err != nil {
 			return fmt.Errorf("unable to setup resource controller: %w", err)
 		}

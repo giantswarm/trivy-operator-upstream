@@ -24,6 +24,15 @@ trivy_resource_configaudits{
     } 2
 ```
 
+### ConfigAuditInfo
+
+Exposes details about ConfigAudit that were discovered in images, enable by setting the EnvVar: `OPERATOR_METRICS_CONFIG_AUDIT_INFO_ENABLED" envDefault:"false"` . For example:
+
+```shell
+trivy_configaudits_info{
+    config_audit_category="car1 category for config audit",config_audit_description="car1 description for config audit",config_audit_id="car1 Id",config_audit_success="false",config_audit_title="car1 config audit title",name="replicaset-nginx-6d4cf56db6",namespace="default",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical"} 1
+```
+
 ### RbacAssessments
 
 A report summary series exposes the count of checks of each status reported in a given `RbacAssessmentsReport`. For example:
@@ -32,6 +41,15 @@ A report summary series exposes the count of checks of each status reported in a
 trivy_role_rbacassessments{
     name="role-6fbccbcb9d",namespace="kube-system",resource_kind="Role",resource_name="6fbccbcb9d",severity="Medium"
     } 1
+```
+
+### RbacAssessmentsInfo
+
+Exposes details about RbacAssessments that were discovered in images, enable by setting the EnvVar: `OPERATOR_METRICS_RBAC_ASSESSMENT_INFO_ENABLED" envDefault:"false"` . For example:
+
+```shell
+trivy_rbacassessments_info{
+    name="role-admin-6d4cf56db6",namespace="default",rbac_assessment_category="car1 category for rbac assessment",rbac_assessment_description="car1 description for rbac assessment",rbac_assessment_id="car1 Id",rbac_assessment_success="true",rbac_assessment_title="car1 rbac assessment title",resource_kind="Role",resource_name="admin-6d4cf56db6",severity="Critical"} 1
 ```
 
 ### ExposedsSecrets
@@ -64,6 +82,13 @@ trivy_resource_infraassessments{
     } 3
 ```
 
+### InfraAssessmentsInfo
+Exposes details about InfraAssessments that were discovered in images, enable by setting the EnvVar: `OPERATOR_METRICS_INFRA_ASSESSMENT_INFO_ENABLED" envDefault:"false"` . For example:
+```shell
+trivy_infraassessments_info{
+    name="pod-kube-apiserver-minikube-6d4cf56db6",namespace="kube-system",infra_assessment_category="car1 category for infra assessment",infra_assessment_description="car1 description for infra assessment",infra_assessment_id="car1 Id",infra_assessment_success="true",infra_assessment_title="car1 infra assessment title",resource_kind="Pod",resource_name="kube-apiserver-minikube-6d4cf56db6",severity="Critical"
+    } 1
+```
 ### ClusterComplianceReport
 
 A report summary series exposes the count of checks of each status reported in a given `ClusterComplianceReport`. For example:
@@ -79,7 +104,7 @@ Exposing vulnerability ID on metrics by setting the EnvVar: `OPERATOR_METRICS_VU
 
 ```shell
 trivy_vulnerability_id{
-    class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16.1",installed_version="5.3.28+dfsg1-0.5",name="replicaset-nginx-deployment-559d658b74-nginx",namespace="default",package_type="debian",resource="libdb5.3",resource_kind="ReplicaSet",resource_name="nginx-deployment-559d658b74",severity="Critical",vuln_id="CVE-2019-8457",vuln_score="7.5",vuln_title="sqlite: heap out-of-bound read in function rtreenode()"
+    class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16.1",installed_version="5.3.28+dfsg1-0.5",name="replicaset-nginx-deployment-559d658b74-nginx",namespace="default",package_type="debian",pkg_path="/app/local"resource="libdb5.3",resource_kind="ReplicaSet",resource_name="nginx-deployment-559d658b74",severity="Critical",vuln_id="CVE-2019-8457",vuln_score="7.5",vuln_title="sqlite: heap out-of-bound read in function rtreenode()"
 } 1
 ```
 

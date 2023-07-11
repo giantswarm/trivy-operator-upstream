@@ -28,7 +28,7 @@ spec:
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       containers:
         - name: {{ .Chart.Name | quote }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{- with .Values.image.pullPolicy }}
           imagePullPolicy: {{ . }}
           {{- end }}
@@ -69,6 +69,8 @@ spec:
               value: ":9090"
             - name: OPERATOR_VULNERABILITY_SCANNER_ENABLED
               value: {{ .Values.operator.vulnerabilityScannerEnabled | quote }}
+            - name: OPERATOR_SBOM_GENERATION_ENABLED
+              value: {{ .Values.operator.vulnerabilityScannerEnabled | quote }}
             - name: OPERATOR_VULNERABILITY_SCANNER_SCAN_ONLY_CURRENT_REVISIONS
               value: {{ .Values.operator.vulnerabilityScannerScanOnlyCurrentRevisions | quote }}
             - name: OPERATOR_SCANNER_REPORT_TTL
@@ -85,6 +87,12 @@ spec:
               value: {{ .Values.operator.exposedSecretScannerEnabled | quote }}
             - name: OPERATOR_METRICS_EXPOSED_SECRET_INFO_ENABLED
               value: {{ .Values.operator.metricsExposedSecretInfo | quote }}
+            - name: OPERATOR_METRICS_CONFIG_AUDIT_INFO_ENABLED
+              value: {{ .Values.operator.metricsConfigAuditInfo | quote }}
+            - name: OPERATOR_METRICS_RBAC_ASSESSMENT_INFO_ENABLED
+              value: {{ .Values.operator.metricsRbacAssessmentInfo | quote }}
+            - name: OPERATOR_METRICS_INFRA_ASSESSMENT_INFO_ENABLED
+              value: {{ .Values.operator.metricsInfraAssessmentInfo | quote }}   
             - name: OPERATOR_WEBHOOK_BROADCAST_URL
               value: {{ .Values.operator.webhookBroadcastURL | quote }}
             - name: OPERATOR_WEBHOOK_BROADCAST_TIMEOUT

@@ -38,7 +38,9 @@ spec:
       app.kubernetes.io/name: trivy-server
       app.kubernetes.io/instance: trivy-server
   volumeClaimTemplates:
-    - metadata:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
         name: data
       spec:
         resources:
@@ -63,19 +65,39 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "trivy-operator.serviceAccountName" . }}
       automountServiceAccountToken: false
+      {{- if .Values.trivy.server.podSecurityContext }}
       securityContext:
-        fsGroup: 65534
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.trivy.server.podSecurityContext | indent 8 }}
+      {{- end }}
+      {{- if .Values.trivy.image.imagePullSecret }}
+      imagePullSecrets:
+      - name:  {{ .Values.trivy.image.imagePullSecret }}
+      {{- end }}
       containers:
         - name: main
-          image: "{{ .Values.trivy.repository }}:{{ .Values.trivy.tag }}"
+          image: "{{ .Values.trivy.image.registry }}/{{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}"
           imagePullPolicy: "IfNotPresent"
+          {{- if .Values.trivy.server.securityContext }}
           securityContext:
-            privileged: false
-            readOnlyRootFilesystem: true
+{{ toYaml .Values.trivy.server.securityContext | indent 12 }}
+          {{- end }}
           args:
             - server
+          {{- if or (or .Values.trivy.httpProxy .Values.trivy.httpsProxy) .Values.trivy.noProxy }}
+          env:
+            {{- if .Values.trivy.httpProxy }}
+            - name: HTTP_PROXY
+              value: {{ .Values.trivy.httpProxy }}
+            {{- end }}
+            {{- if .Values.trivy.httpsProxy }}
+            - name: HTTPS_PROXY
+              value: {{ .Values.trivy.httpsProxy }}
+            {{- end }}
+            {{- if .Values.trivy.noProxy }}
+            - name: NO_PROXY
+              value: {{ .Values.trivy.noProxy }}
+            {{- end }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: trivy-operator-trivy-config
@@ -116,6 +138,10 @@ spec:
       volumes:
         - name: tmp-data
           emptyDir: {}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- . | toYaml | nindent 8 }}

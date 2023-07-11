@@ -59,8 +59,8 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			vr1.Report.Artifact.Tag = "1.16"
 			vr1.Report.Summary.CriticalCount = 2
 			vr1.Report.Vulnerabilities = []v1alpha1.Vulnerability{
-				{InstalledVersion: "2.28-10", FixedVersion: "2.28-11", Class: "os-pkgs", PackageType: "debian", Resource: "libc-bin", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR1-CRITICAL-1", Title: "VR1 Critical vulnerability 1", Score: pointer.Float64(8.5)},
-				{InstalledVersion: "1.19.7", Class: "os-pkgs", PackageType: "debian", Resource: "dppkg", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR1-CRITICAL-2", Title: "VR1 Critical vulnerability 2", Score: pointer.Float64(8.3)},
+				{InstalledVersion: "2.28-10", FixedVersion: "2.28-11", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "libc-bin", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR1-CRITICAL-1", Title: "VR1 Critical vulnerability 1", Score: pointer.Float64(8.5)},
+				{InstalledVersion: "1.19.7", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "dppkg", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR1-CRITICAL-2", Title: "VR1 Critical vulnerability 2", Score: pointer.Float64(8.3)},
 			}
 
 			vr2 := &v1alpha1.VulnerabilityReport{}
@@ -76,17 +76,17 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			vr2.Report.Summary.CriticalCount = 4
 			vr2.Report.Summary.HighCount = 7
 			vr2.Report.Vulnerabilities = []v1alpha1.Vulnerability{
-				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", Resource: "zlib", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-1", Title: "VR2 Critical vulnerability 1", Score: pointer.Float64(7.5)},
-				{InstalledVersion: "1.34.1-r3", Class: "os-pkgs", PackageType: "debian", Resource: "ssl_client", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-2", Title: "VR2 Critical vulnerability 2", Score: pointer.Float64(8.7)},
-				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", Resource: "zlib", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-3", Title: "VR2 Critical vulnerability 3", Score: pointer.Float64(8.5)},
-				{InstalledVersion: "1.1.1l-r7", Class: "os-pkgs", PackageType: "debian", Resource: "libssl1.1", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-4", Title: "VR2 Critical vulnerability 4", Score: pointer.Float64(9.5)},
-				{InstalledVersion: "v1.9.0", Class: "os-pkgs", PackageType: "debian", Resource: "golang.org/prometheus/client_golang", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-1", Title: "VR2 High vulnerability 1", Score: pointer.Float64(7)},
-				{InstalledVersion: "v0.0.0-20210711020723-a769d52b0f97", Class: "os-pkgs", PackageType: "debian", Resource: "golang.org/x/crypto", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-2", Title: "VR2 High vulnerability 2", Score: pointer.Float64(6.7)},
-				{InstalledVersion: "v0.0.0-20210226172049-e18ecbb05110", Class: "os-pkgs", PackageType: "debian", Resource: "golang.org/x/net", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-3", Title: "VR2 High vulnerability 3", Score: pointer.Float64(7.1)},
-				{InstalledVersion: "v0.3.3", Class: "os-pkgs", PackageType: "debian", Resource: "golang.org/x/text", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-4", Title: "VR2 High vulnerability 4", Score: pointer.Float64(7)},
-				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", Resource: "zlib", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-5", Title: "VR2 High vulnerability 5", Score: pointer.Float64(7)},
-				{InstalledVersion: "1.34.1-r3", Class: "os-pkgs", PackageType: "debian", Resource: "busybox", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-6", Title: "VR2 High vulnerability 6", Score: pointer.Float64(6)},
-				{InstalledVersion: "1.1.1l-r7", Class: "os-pkgs", PackageType: "debian", Resource: "libssl1.1", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-7", Title: "VR2 High vulnerability 7", Score: pointer.Float64(6.4)},
+				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "zlib", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-1", Title: "VR2 Critical vulnerability 1", Score: pointer.Float64(7.5)},
+				{InstalledVersion: "1.34.1-r3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "ssl_client", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-2", Title: "VR2 Critical vulnerability 2", Score: pointer.Float64(8.7)},
+				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "zlib", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-3", Title: "VR2 Critical vulnerability 3", Score: pointer.Float64(8.5)},
+				{InstalledVersion: "1.1.1l-r7", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "libssl1.1", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR2-CRITICAL-4", Title: "VR2 Critical vulnerability 4", Score: pointer.Float64(9.5)},
+				{InstalledVersion: "v1.9.0", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "golang.org/prometheus/client_golang", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-1", Title: "VR2 High vulnerability 1", Score: pointer.Float64(7)},
+				{InstalledVersion: "v0.0.0-20210711020723-a769d52b0f97", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "golang.org/x/crypto", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-2", Title: "VR2 High vulnerability 2", Score: pointer.Float64(6.7)},
+				{InstalledVersion: "v0.0.0-20210226172049-e18ecbb05110", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "golang.org/x/net", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-3", Title: "VR2 High vulnerability 3", Score: pointer.Float64(7.1)},
+				{InstalledVersion: "v0.3.3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "golang.org/x/text", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-4", Title: "VR2 High vulnerability 4", Score: pointer.Float64(7)},
+				{InstalledVersion: "1.2.11-r3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "zlib", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-5", Title: "VR2 High vulnerability 5", Score: pointer.Float64(7)},
+				{InstalledVersion: "1.34.1-r3", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "busybox", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-6", Title: "VR2 High vulnerability 6", Score: pointer.Float64(6)},
+				{InstalledVersion: "1.1.1l-r7", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "libssl1.1", Severity: v1alpha1.SeverityHigh, VulnerabilityID: "CVE-VR2-HIGH-7", Title: "VR2 High vulnerability 7", Score: pointer.Float64(6.4)},
 			}
 
 			vr3 := &v1alpha1.VulnerabilityReport{}
@@ -101,7 +101,7 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			vr3.Report.Artifact.Digest = "sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8"
 			vr3.Report.Summary.CriticalCount = 1
 			vr3.Report.Vulnerabilities = []v1alpha1.Vulnerability{
-				{InstalledVersion: "1.19.7", Class: "os-pkgs", PackageType: "debian", Resource: "dppkg", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR3-CRITICAL-1", Title: "VR3 Critical vulnerability 1", Score: pointer.Float64(8.4)},
+				{InstalledVersion: "1.19.7", Class: "os-pkgs", PackageType: "debian", PkgPath: "ab", Resource: "dppkg", Severity: v1alpha1.SeverityCritical, VulnerabilityID: "CVE-VR3-CRITICAL-1", Title: "VR3 Critical vulnerability 1", Score: pointer.Float64(8.4)},
 			}
 
 			client.WithRuntimeObjects(vr1, vr2, vr3)
@@ -157,20 +157,20 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			const expected = `
 		# HELP trivy_vulnerability_id Number of container image vulnerabilities group by vulnerability id
 		# TYPE trivy_vulnerability_id gauge
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="controller",fixed_version="",image_digest="sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8",image_registry="k8s.gcr.io",image_repository="ingress-nginx/controller",image_tag="",installed_version="1.19.7",name="daemonset-ingress-nginx-controller-controller",namespace="ingress-nginx",package_type="debian",resource="dppkg",resource_kind="DaemonSet",resource_name="ingress-nginx-controller",severity="Critical",vuln_id="CVE-VR3-CRITICAL-1",vuln_score="8.4",vuln_title="VR3 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="controller",fixed_version="",image_digest="sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8",image_registry="k8s.gcr.io",image_repository="ingress-nginx/controller",image_tag="",installed_version="1.19.7",name="daemonset-ingress-nginx-controller-controller",namespace="ingress-nginx",package_type="debian",pkg_path="ab",resource="dppkg",resource_kind="DaemonSet",resource_name="ingress-nginx-controller",severity="Critical",vuln_id="CVE-VR3-CRITICAL-1",vuln_score="8.4",vuln_title="VR3 Critical vulnerability 1"} 1
 		`
 			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_vulnerability_id")).
 				To(Succeed())
@@ -181,19 +181,19 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			const expected = `
 		# HELP trivy_vulnerability_id Number of container image vulnerabilities group by vulnerability id
 		# TYPE trivy_vulnerability_id gauge
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
 		`
 			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_vulnerability_id")).
 				To(Succeed())
@@ -206,20 +206,20 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			const expected = `
 		# HELP trivy_vulnerability_id Number of container image vulnerabilities group by vulnerability id
 		# TYPE trivy_vulnerability_id gauge
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",custom_prefix_ssot="",custom_prefix_tier="tier-1",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",custom_prefix_ssot="",custom_prefix_tier="tier-1",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
-		trivy_vulnerability_id{class="os-pkgs",container_name="controller",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8",image_registry="k8s.gcr.io",image_repository="ingress-nginx/controller",image_tag="",installed_version="1.19.7",name="daemonset-ingress-nginx-controller-controller",namespace="ingress-nginx",package_type="debian",resource="dppkg",resource_kind="DaemonSet",resource_name="ingress-nginx-controller",severity="Critical",vuln_id="CVE-VR3-CRITICAL-1",vuln_score="8.4",vuln_title="VR3 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",custom_prefix_ssot="",custom_prefix_tier="tier-1",fixed_version="2.28-11",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="2.28-10",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="libc-bin",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-1",vuln_score="8.5",vuln_title="VR1 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="nginx",custom_prefix_ssot="",custom_prefix_tier="tier-1",fixed_version="",image_digest="",image_registry="index.docker.io",image_repository="library/nginx",image_tag="1.16",installed_version="1.19.7",name="replicaset-nginx-6d4cf56db6-nginx",namespace="default",package_type="debian",pkg_path="ab",resource="dppkg",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical",vuln_id="CVE-VR1-CRITICAL-2",vuln_score="8.3",vuln_title="VR1 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-1",vuln_score="7.5",vuln_title="VR2 Critical vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="ssl_client",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-2",vuln_score="8.7",vuln_title="VR2 Critical vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-3",vuln_score="8.5",vuln_title="VR2 Critical vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="Critical",vuln_id="CVE-VR2-CRITICAL-4",vuln_score="9.5",vuln_title="VR2 Critical vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v1.9.0",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/prometheus/client_golang",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-1",vuln_score="7",vuln_title="VR2 High vulnerability 1"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210711020723-a769d52b0f97",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/crypto",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-2",vuln_score="6.7",vuln_title="VR2 High vulnerability 2"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.0.0-20210226172049-e18ecbb05110",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/net",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-3",vuln_score="7.1",vuln_title="VR2 High vulnerability 3"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="v0.3.3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="golang.org/x/text",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-4",vuln_score="7",vuln_title="VR2 High vulnerability 4"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.2.11-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="zlib",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-5",vuln_score="7",vuln_title="VR2 High vulnerability 5"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.34.1-r3",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="busybox",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-6",vuln_score="6",vuln_title="VR2 High vulnerability 6"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="proxy",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="",image_registry="quay.io",image_repository="oauth2-proxy/oauth2-proxy",image_tag="v7.2.1",installed_version="1.1.1l-r7",name="replicaset-app-d327abe3c4-proxy",namespace="some-ns",package_type="debian",pkg_path="ab",resource="libssl1.1",resource_kind="ReplicaSet",resource_name="app-d327abe3c4",severity="High",vuln_id="CVE-VR2-HIGH-7",vuln_score="6.4",vuln_title="VR2 High vulnerability 7"} 1
+		trivy_vulnerability_id{class="os-pkgs",container_name="controller",custom_prefix_ssot="",custom_prefix_tier="",fixed_version="",image_digest="sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8",image_registry="k8s.gcr.io",image_repository="ingress-nginx/controller",image_tag="",installed_version="1.19.7",name="daemonset-ingress-nginx-controller-controller",namespace="ingress-nginx",package_type="debian",pkg_path="ab",resource="dppkg",resource_kind="DaemonSet",resource_name="ingress-nginx-controller",severity="Critical",vuln_id="CVE-VR3-CRITICAL-1",vuln_score="8.4",vuln_title="VR3 Critical vulnerability 1"} 1
 		`
 			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_vulnerability_id")).
 				To(Succeed())
@@ -421,6 +421,26 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car1.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "ReplicaSet",
 				trivyoperator.LabelResourceName: "nginx-6d4cf56db6"}
+			car1.Report.Checks = append(car1.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car1 Id",
+						Title:       "car1 config audit title",
+						Description: "car1 description for config audit",
+						Category:    "car1 category for config audit",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car1 Id",
+						Title:       "car1 config audit title",
+						Description: "car1 description for config audit",
+						Category:    "car1 category for config audit",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
+
 			car1.Report.Summary.CriticalCount = 2
 			car1.Report.Summary.LowCount = 9
 
@@ -430,6 +450,25 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car2.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "ConfigMap",
 				trivyoperator.LabelResourceName: "test"}
+			car2.Report.Checks = append(car2.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car2 Id",
+						Title:       "car2 config audit title",
+						Description: "car2 description for config audit",
+						Category:    "car2 category for config audit",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car2 Id",
+						Title:       "car2 config audit title",
+						Description: "car2 description for config audit",
+						Category:    "car2 category for config audit",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
 			car2.Report.Summary.LowCount = 1
 
 			car3 := &v1alpha1.ConfigAuditReport{}
@@ -438,6 +477,25 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car3.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "ReplicaSet",
 				trivyoperator.LabelResourceName: "vault-agent-injector-65fd65bfb8"}
+			car3.Report.Checks = append(car3.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car3 Id",
+						Title:       "car3 config audit title",
+						Description: "car3 description for config audit",
+						Category:    "car3 category for config audit",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car3 Id",
+						Title:       "car3 config audit title",
+						Description: "car3 description for config audit",
+						Category:    "car3 category for config audit",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
 			car3.Report.Summary.MediumCount = 4
 			car3.Report.Summary.LowCount = 7
 
@@ -446,7 +504,7 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 
 		AssertNoLintIssues()
 
-		It("should produce correct metrics with cluster scope", func() {
+		It("should produce correct metrics with cluster scope - Summary", func() {
 			const expected = `
         # HELP trivy_resource_configaudits Number of failing resource configuration auditing checks
         # TYPE trivy_resource_configaudits gauge
@@ -467,7 +525,23 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 				To(Succeed())
 		})
 
-		It("should produce correct metrics from target namespaces", func() {
+		It("should produce correct metrics with cluster scope - Info", func() {
+			collector.Config.MetricsConfigAuditInfo = true
+			const expected = `
+        # HELP trivy_configaudits_info Number of failing resource configuration auditing checks Info
+		# TYPE trivy_configaudits_info gauge
+		trivy_configaudits_info{config_audit_category="car1 category for config audit",config_audit_description="car1 description for config audit",config_audit_id="car1 Id",config_audit_success="false",config_audit_title="car1 config audit title",name="replicaset-nginx-6d4cf56db6",namespace="default",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical"} 1
+		trivy_configaudits_info{config_audit_category="car1 category for config audit",config_audit_description="car1 description for config audit",config_audit_id="car1 Id",config_audit_success="true",config_audit_title="car1 config audit title",name="replicaset-nginx-6d4cf56db6",namespace="default",resource_kind="ReplicaSet",resource_name="nginx-6d4cf56db6",severity="Critical"} 1
+		trivy_configaudits_info{config_audit_category="car2 category for config audit",config_audit_description="car2 description for config audit",config_audit_id="car2 Id",config_audit_success="false",config_audit_title="car2 config audit title",name="configmap-test",namespace="some-ns",resource_kind="ConfigMap",resource_name="test",severity="Critical"} 1
+		trivy_configaudits_info{config_audit_category="car2 category for config audit",config_audit_description="car2 description for config audit",config_audit_id="car2 Id",config_audit_success="true",config_audit_title="car2 config audit title",name="configmap-test",namespace="some-ns",resource_kind="ConfigMap",resource_name="test",severity="Critical"} 1
+		trivy_configaudits_info{config_audit_category="car3 category for config audit",config_audit_description="car3 description for config audit",config_audit_id="car3 Id",config_audit_success="false",config_audit_title="car3 config audit title",name="replicaset-vault-agent-injector-65fd65bfb8",namespace="vault-system",resource_kind="ReplicaSet",resource_name="vault-agent-injector-65fd65bfb8",severity="Critical"} 1
+		trivy_configaudits_info{config_audit_category="car3 category for config audit",config_audit_description="car3 description for config audit",config_audit_id="car3 Id",config_audit_success="true",config_audit_title="car3 config audit title",name="replicaset-vault-agent-injector-65fd65bfb8",namespace="vault-system",resource_kind="ReplicaSet",resource_name="vault-agent-injector-65fd65bfb8",severity="Critical"} 1
+		`
+			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_configaudits_info")).
+				To(Succeed())
+		})
+
+		It("should produce correct metrics from target namespaces - Summary", func() {
 			collector.TargetNamespaces = "default,some-ns"
 			const expected = `
         # HELP trivy_resource_configaudits Number of failing resource configuration auditing checks
@@ -494,6 +568,26 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car1.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "Pod",
 				trivyoperator.LabelResourceName: "kube-apiserver-minikube-6d4cf56db6"}
+			car1.Report.Checks = append(car1.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car1 Id",
+						Title:       "car1 infra assessment title",
+						Description: "car1 description for infra assessment",
+						Category:    "car1 category for infra assessment",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car1 Id",
+						Title:       "car1 infra assessment title",
+						Description: "car1 description for infra assessment",
+						Category:    "car1 category for infra assessment",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
+
 			car1.Report.Summary.CriticalCount = 2
 			car1.Report.Summary.LowCount = 9
 
@@ -514,6 +608,18 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_resource_infraassessments")).
 				To(Succeed())
 		})
+
+		It("should produce correct infra assessment metrics with cluster scope - Info", func() {
+			collector.Config.MetricsInfraAssessmentInfo = true
+			const expected = `
+		# HELP trivy_infraassessments_info Number of failing k8s infra assessment checks Info
+		# TYPE trivy_infraassessments_info gauge
+		trivy_infraassessments_info{name="pod-kube-apiserver-minikube-6d4cf56db6",namespace="kube-system",infra_assessment_category="car1 category for infra assessment",infra_assessment_description="car1 description for infra assessment",infra_assessment_id="car1 Id",infra_assessment_success="true",infra_assessment_title="car1 infra assessment title",resource_kind="Pod",resource_name="kube-apiserver-minikube-6d4cf56db6",severity="Critical"} 1
+		trivy_infraassessments_info{name="pod-kube-apiserver-minikube-6d4cf56db6",namespace="kube-system",infra_assessment_category="car1 category for infra assessment",infra_assessment_description="car1 description for infra assessment",infra_assessment_id="car1 Id",infra_assessment_success="false",infra_assessment_title="car1 infra assessment title",resource_kind="Pod",resource_name="kube-apiserver-minikube-6d4cf56db6",severity="Critical"} 1
+		`
+			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_rbacassessments_info")).
+				To(Succeed())
+		})
 	})
 
 	Context("RbacAssessment", func() {
@@ -524,6 +630,26 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car1.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "Role",
 				trivyoperator.LabelResourceName: "admin-6d4cf56db6"}
+			car1.Report.Checks = append(car1.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car1 Id",
+						Title:       "car1 rbac assessment title",
+						Description: "car1 description for rbac assessment",
+						Category:    "car1 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car1 Id",
+						Title:       "car1 rbac assessment title",
+						Description: "car1 description for rbac assessment",
+						Category:    "car1 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
+
 			car1.Report.Summary.CriticalCount = 2
 			car1.Report.Summary.LowCount = 9
 
@@ -533,6 +659,25 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car2.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "Role",
 				trivyoperator.LabelResourceName: "write-test"}
+			car2.Report.Checks = append(car2.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car2 Id",
+						Title:       "car2 rbac assessment title",
+						Description: "car2 description for rbac assessment",
+						Category:    "car2 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car2 Id",
+						Title:       "car2 rbac assessment title",
+						Description: "car2 description for rbac assessment",
+						Category:    "car2 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
 			car2.Report.Summary.LowCount = 1
 
 			car3 := &v1alpha1.RbacAssessmentReport{}
@@ -541,6 +686,25 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 			car3.Labels = labels.Set{
 				trivyoperator.LabelResourceKind: "Role",
 				trivyoperator.LabelResourceName: "read-65fd65bfb8"}
+			car3.Report.Checks = append(car3.Report.Checks,
+				[]v1alpha1.Check{
+					{
+						ID:          "car3 Id",
+						Title:       "car3 rbac assessment title",
+						Description: "car3 description for rbac assessment",
+						Category:    "car3 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     true,
+					},
+					{
+						ID:          "car3 Id",
+						Title:       "car3 rbac assessment title",
+						Description: "car3 description for rbac assessment",
+						Category:    "car3 category for rbac assessment",
+						Severity:    "Critical",
+						Success:     false,
+					},
+				}...)
 			car3.Report.Summary.MediumCount = 4
 			car3.Report.Summary.LowCount = 7
 
@@ -567,6 +731,22 @@ var _ = Describe("ResourcesMetricsCollector", func() {
 		trivy_role_rbacassessments{name="role-write-test",namespace="some-ns",resource_kind="Role",resource_name="write-test",severity="Medium"} 0
 		`
 			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_role_rbacassessments")).
+				To(Succeed())
+		})
+
+		It("should produce correct rbac assessment metrics with cluster scope - Info", func() {
+			collector.Config.MetricsRbacAssessmentInfo = true
+			const expected = `
+		# HELP trivy_rbacassessments_info Number of rbac risky role assessment checks Info
+		# TYPE trivy_rbacassessments_info gauge
+		trivy_rbacassessments_info{name="role-admin-6d4cf56db6",namespace="default",rbac_assessment_category="car1 category for rbac assessment",rbac_assessment_description="car1 description for rbac assessment",rbac_assessment_id="car1 Id",rbac_assessment_success="true",rbac_assessment_title="car1 rbac assessment title",resource_kind="Role",resource_name="admin-6d4cf56db6",severity="Critical"} 1
+		trivy_rbacassessments_info{name="role-admin-6d4cf56db6",namespace="default",rbac_assessment_category="car1 category for rbac assessment",rbac_assessment_description="car1 description for rbac assessment",rbac_assessment_id="car1 Id",rbac_assessment_success="false",rbac_assessment_title="car1 rbac assessment title",resource_kind="Role",resource_name="admin-6d4cf56db6",severity="Critical"} 1
+		trivy_rbacassessments_info{name="role-write-test",namespace="some-ns",rbac_assessment_category="car2 category for rbac assessment",rbac_assessment_description="car2 description for rbac assessment",rbac_assessment_id="car2 Id",rbac_assessment_success="true",rbac_assessment_title="car2 rbac assessment title",resource_kind="Role",resource_name="write-test",severity="Critical"} 1
+		trivy_rbacassessments_info{name="role-write-test",namespace="some-ns",rbac_assessment_category="car2 category for rbac assessment",rbac_assessment_description="car2 description for rbac assessment",rbac_assessment_id="car2 Id",rbac_assessment_success="false",rbac_assessment_title="car2 rbac assessment title",resource_kind="Role",resource_name="write-test",severity="Critical"} 1
+		trivy_rbacassessments_info{name="role-read-65fd65bfb8",namespace="vault-system",rbac_assessment_category="car3 category for rbac assessment",rbac_assessment_description="car3 description for rbac assessment",rbac_assessment_id="car3 Id",rbac_assessment_success="true",rbac_assessment_title="car3 rbac assessment title",resource_kind="Role",resource_name="read-65fd65bfb8",severity="Critical"} 1
+		trivy_rbacassessments_info{name="role-read-65fd65bfb8",namespace="vault-system",rbac_assessment_category="car3 category for rbac assessment",rbac_assessment_description="car3 description for rbac assessment",rbac_assessment_id="car3 Id",rbac_assessment_success="false",rbac_assessment_title="car3 rbac assessment title",resource_kind="Role",resource_name="read-65fd65bfb8",severity="Critical"} 1
+		`
+			Expect(testutil.CollectAndCompare(collector, strings.NewReader(expected), "trivy_rbacassessments_info")).
 				To(Succeed())
 		})
 

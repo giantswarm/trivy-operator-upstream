@@ -53,6 +53,7 @@ func (r *WebhookReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		&v1alpha1.ClusterRbacAssessmentReport{},
 		&v1alpha1.ClusterConfigAuditReport{},
 		&v1alpha1.ClusterInfraAssessmentReport{},
+		&v1alpha1.SbomReport{},
 	}
 
 	for _, reportType := range reports {
@@ -72,12 +73,7 @@ func (r *WebhookReconciler) SetupWithManager(mgr ctrl.Manager) error {
 func (r *WebhookReconciler) reconcileReport(reportType client.Object) reconcile.Func {
 	return func(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 		log := r.Logger.WithValues("report", request.NamespacedName)
-		if ignoreHistoricalReport(reportType) {
-			log.V(1).Info("Ignoring historical report")
-			return ctrl.Result{}, nil
-		}
 		verb := Update
-
 		err := r.Client.Get(ctx, request.NamespacedName, reportType)
 		if err != nil {
 			if !errors.IsNotFound(err) {
@@ -88,6 +84,11 @@ func (r *WebhookReconciler) reconcileReport(reportType client.Object) reconcile.
 				return ctrl.Result{}, nil
 			}
 			verb = Delete
+		}
+
+		if ignoreHistoricalReport(reportType) {
+			log.V(1).Info("Ignoring historical report")
+			return ctrl.Result{}, nil
 		}
 
 		if r.WebhookSendDeletedReports {

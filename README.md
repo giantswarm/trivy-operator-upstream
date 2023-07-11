@@ -12,7 +12,7 @@
 <a href="https://slack.aquasec.com/?_ga=2.51428586.2119512742.1655808394-1739877964.1641199050">
 <img src="https://img.shields.io/static/v1?label=Slack&message=Join+our+Community&color=4a154b&logo=slack">
 </a>
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/trivy-operator)](https://artifacthub.io/packages/search?repo=trivy-operator)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/trivy-operator)](https://artifacthub.io/packages/helm/trivy-operator/trivy-operator)
 
 # Introduction
 
@@ -32,11 +32,13 @@ The Trivy operator automatically updates security reports in response to workloa
 - Exposed Secret Scans: Automated secret scans which find and detail the location of exposed Secrets within your cluster.
 - RBAC scans: Role Based Access Control scans provide detailed information on the access rights of the different resources installed.
 - K8s core component infra assessment scan Kubernetes infra core components (etcd,apiserver,scheduler,controller-manager and etc) setting and configuration.
+- k8s outdated api validation - a configaudit check will validate if the resource api has been deprecated and planned for removal 
 - Compliance reports
   - NSA, CISA Kubernetes Hardening Guidance v1.1 cybersecurity technical report is produced.
   - CIS Kubernetes Benchmark v1.23 cybersecurity technical report is produced.
   - Kubernetes pss-baseline, Pod Security Standards
   - Kubernetes pss-restricted, Pod Security Standards
+- SBOM (software bill of materials genertations) for Kubernetes workloads.
 
 <p align="center">
 <img src="docs/images/trivy-operator-overview.png" alt="Trivy-operator Overview"/>

@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/aquasecurity/trivy-operator/pkg/trivyoperator"
+	ocpappsv1 "github.com/openshift/api/apps/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -13,13 +16,12 @@ import (
 	networkingv1 "k8s.io/api/networking/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
-	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/validation"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
-	"strings"
 )
 
 // ObjectRef is a simplified representation of a Kubernetes client.Object.
@@ -39,6 +41,7 @@ const (
 	KindReplicaSet            Kind = "ReplicaSet"
 	KindReplicationController Kind = "ReplicationController"
 	KindDeployment            Kind = "Deployment"
+	KindDeploymentConfig      Kind = "DeploymentConfig"
 	KindStatefulSet           Kind = "StatefulSet"
 	KindDaemonSet             Kind = "DaemonSet"
 	KindCronJob               Kind = "CronJob"
@@ -59,7 +62,10 @@ const (
 )
 
 const (
-	deploymentAnnotation string = "deployment.kubernetes.io/revision"
+	deploymentAnnotation       string = "deployment.kubernetes.io/revision"
+	deploymentConfigAnnotation string = "openshift.io/deployment-config.latest-version"
+
+	DeployerPodForDeploymentAnnotation string = "openshift.io/deployment-config.name"
 )
 const (
 	cronJobResource        = "cronjobs"
@@ -281,7 +287,12 @@ func NewObjectResolver(c client.Client, cm CompatibleMgr) ObjectResolver {
 // InitCompatibleMgr initializes a CompatibleObjectMapper who store a map the of supported kinds with it compatible Objects (group/api/kind)
 // it dynamically fetches the compatible k8s objects (group/api/kind) by resource from the cluster and store it in kind vs k8s object mapping
 // It will enable the operator to support old and new API resources based on cluster version support
-func InitCompatibleMgr(restMapper meta.RESTMapper) (CompatibleMgr, error) {
+func InitCompatibleMgr() (CompatibleMgr, error) {
+	cf := genericclioptions.NewConfigFlags(true)
+	restMapper, err := cf.ToRESTMapper()
+	if err != nil {
+		return nil, err
+	}
 	kindObjectMap := make(map[string]string)
 	for _, resource := range getCompatibleResources() {
 		gvk, err := restMapper.KindFor(schema.GroupVersionResource{Resource: resource})
@@ -635,6 +646,27 @@ func (o *ObjectResolver) IsActiveReplicaSet(ctx context.Context, workloadObj cli
 		deploymentRevisionAnnotation := deploymentObject.GetAnnotations()
 		replicasetRevisionAnnotation := workloadObj.GetAnnotations()
 		return replicasetRevisionAnnotation[deploymentAnnotation] == deploymentRevisionAnnotation[deploymentAnnotation], nil
+	}
+	return true, nil
+}
+
+// +kubebuilder:rbac:groups=apps.openshift.io,resources=deploymentconfigs,verbs=get;list;watch
+
+func (o *ObjectResolver) IsActiveReplicationController(ctx context.Context, workloadObj client.Object, controller *metav1.OwnerReference) (bool, error) {
+	if controller != nil && controller.Kind == string(KindDeploymentConfig) {
+		deploymentConfigObj := &ocpappsv1.DeploymentConfig{}
+
+		err := o.Client.Get(ctx, client.ObjectKey{
+			Namespace: workloadObj.GetNamespace(),
+			Name:      controller.Name,
+		}, deploymentConfigObj)
+
+		if err != nil {
+			return false, err
+		}
+		replicasetRevisionAnnotation := workloadObj.GetAnnotations()
+		latestRevision := fmt.Sprintf("%d", deploymentConfigObj.Status.LatestVersion)
+		return replicasetRevisionAnnotation[deploymentConfigAnnotation] == latestRevision, nil
 	}
 	return true, nil
 }

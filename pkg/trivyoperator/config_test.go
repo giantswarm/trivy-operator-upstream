@@ -151,6 +151,35 @@ func TestConfigData_GetScanJobTolerations(t *testing.T) {
 	}
 }
 
+func TestConfigData_GetImagePullSecret(t *testing.T) {
+	testCases := []struct {
+		name        string
+		config      trivyoperator.ConfigData
+		expected    []corev1.LocalObjectReference
+		expectError string
+	}{
+		{
+			name:     "no image pull secrets in ConfigData",
+			config:   trivyoperator.ConfigData{},
+			expected: []corev1.LocalObjectReference{},
+		},
+		{
+			name: "one valid imagePullSecret",
+			config: trivyoperator.ConfigData{
+				"node.collector.imagePullSecret": `mysecret`},
+			expected: []corev1.LocalObjectReference{{
+				Name: "mysecret",
+			}},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := tc.config.GetNodeCollectorImagePullsecret()
+			assert.Equal(t, tc.expected, got, tc.name)
+		})
+	}
+}
+
 func TestConfigData_GetScanJobPodPriorityClassName(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -430,6 +459,16 @@ func TestConfigData_GetScanJobPodTemplateLabels(t *testing.T) {
 		expected    labels.Set
 		expectError string
 	}{
+		{
+			name: "scan job template labels with additional comma at the end can be fetched successfully",
+			config: trivyoperator.ConfigData{
+				"scanJob.podTemplateLabels": "a.b=c.d/e,foo=bar,",
+			},
+			expected: labels.Set{
+				"foo": "bar",
+				"a.b": "c.d/e",
+			},
+		},
 		{
 			name: "scan job template labels can be fetched successfully",
 			config: trivyoperator.ConfigData{

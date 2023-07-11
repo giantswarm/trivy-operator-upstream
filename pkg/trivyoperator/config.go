@@ -9,6 +9,7 @@ import (
 
 	"github.com/aquasecurity/trivy-operator/pkg/apis/aquasecurity/v1alpha1"
 	containerimage "github.com/google/go-containerregistry/pkg/name"
+	ocpappsv1 "github.com/openshift/api/apps/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -35,6 +36,7 @@ func NewScheme() *runtime.Scheme {
 	_ = v1alpha1.AddToScheme(scheme)
 	_ = coordinationv1.AddToScheme(scheme)
 	_ = apiextensionsv1.AddToScheme(scheme)
+	_ = ocpappsv1.Install(scheme)
 	return scheme
 }
 
@@ -53,12 +55,14 @@ type Scanner string
 const (
 	KeyVulnerabilityScannerEnabled       = "vulnerabilityScannerEnabled"
 	KeyExposedSecretsScannerEnabled      = "exposedSecretsScannerEnabled"
+	KeyGenerateSbom                      = "generateSbomEnabled"
 	keyVulnerabilityReportsScanner       = "vulnerabilityReports.scanner"
 	KeyVulnerabilityScansInSameNamespace = "vulnerabilityReports.scanJobsInSameNamespace"
 	keyConfigAuditReportsScanner         = "configAuditReports.scanner"
 	keyScanJobTolerations                = "scanJob.tolerations"
 	KeyScanJobcompressLogs               = "scanJob.compressLogs"
 	KeyNodeCollectorVolumes              = "nodeCollector.volumes"
+	KeyNodeCollectorExcludeNodes         = "nodeCollector.excludeNodes"
 	KeyNodeCollectorVolumeMounts         = "nodeCollector.volumeMounts"
 	keyScanJobNodeSelector               = "scanJob.nodeSelector"
 	keyScanJobAnnotations                = "scanJob.annotations"
@@ -75,6 +79,7 @@ const (
 	KeyMetricsResourceLabelsPrefix         = "metrics.resourceLabelsPrefix"
 	KeyTrivyServerURL                      = "trivy.serverURL"
 	KeyNodeCollectorImageRef               = "node.collector.imageRef"
+	KeyNodeCollectorImagePullSecret        = "node.collector.imagePullSecret"
 	KeyAdditionalReportLabels              = "report.additionalLabels"
 )
 
@@ -121,6 +126,11 @@ func (c ConfigData) ExposedSecretsScannerEnabled() bool {
 	return c.getBoolKey(KeyExposedSecretsScannerEnabled)
 }
 
+// GenerateSbomEnabled returns if the sbom generation is enabled
+func (c ConfigData) GenerateSbomEnabled() bool {
+	return c.getBoolKey(KeyGenerateSbom)
+}
+
 func (c ConfigData) getBoolKey(key string) bool {
 	var ok bool
 	var value string
@@ -160,6 +170,15 @@ func (c ConfigData) GetScanJobTolerations() ([]corev1.Toleration, error) {
 	err := json.Unmarshal([]byte(c[keyScanJobTolerations]), &scanJobTolerations)
 
 	return scanJobTolerations, err
+}
+
+func (c ConfigData) GetNodeCollectorImagePullsecret() []corev1.LocalObjectReference {
+	imagePullSecrets := make([]corev1.LocalObjectReference, 0)
+	imagePullSecretValue := c[KeyNodeCollectorImagePullSecret]
+	if c[KeyNodeCollectorImagePullSecret] != "" {
+		imagePullSecrets = append(imagePullSecrets, corev1.LocalObjectReference{Name: imagePullSecretValue})
+	}
+	return imagePullSecrets
 }
 
 func (c ConfigData) GetNodeCollectorVolumes() ([]corev1.Volume, error) {
@@ -243,6 +262,24 @@ func (c ConfigData) GetScanJobAnnotations() (map[string]string, error) {
 	return scanJobAnnotationsMap, nil
 }
 
+func (c ConfigData) GetNodeCollectorExcludeNodes() (map[string]string, error) {
+	nodeCollectorExcludeNodesStr, found := c[KeyNodeCollectorExcludeNodes]
+	if !found || strings.TrimSpace(nodeCollectorExcludeNodesStr) == "" {
+		return map[string]string{}, nil
+	}
+
+	nodeCollectorExcludeNodesMap := map[string]string{}
+	for _, excludeNode := range strings.Split(nodeCollectorExcludeNodesStr, ",") {
+		sepByEqual := strings.Split(excludeNode, "=")
+		if len(sepByEqual) != 2 {
+			return map[string]string{}, fmt.Errorf("failed parsing incorrectly formatted exclude nodes values: %s", nodeCollectorExcludeNodesStr)
+		}
+		key, value := sepByEqual[0], sepByEqual[1]
+		nodeCollectorExcludeNodesMap[key] = value
+	}
+	return nodeCollectorExcludeNodesMap, nil
+}
+
 func (c ConfigData) GetScanJobPodTemplateLabels() (labels.Set, error) {
 	scanJobPodTemplateLabelsStr, found := c[keyScanJobPodTemplateLabels]
 	if !found || strings.TrimSpace(scanJobPodTemplateLabelsStr) == "" {
@@ -250,7 +287,8 @@ func (c ConfigData) GetScanJobPodTemplateLabels() (labels.Set, error) {
 	}
 
 	scanJobPodTemplateLabelsMap := map[string]string{}
-	for _, annotation := range strings.Split(scanJobPodTemplateLabelsStr, ",") {
+	labelParts := strings.Split(strings.TrimSuffix(scanJobPodTemplateLabelsStr, ","), ",")
+	for _, annotation := range labelParts {
 		sepByEqual := strings.Split(annotation, "=")
 		if len(sepByEqual) != 2 {
 			return labels.Set{}, fmt.Errorf("failed parsing incorrectly formatted custom scan pod template labels: %s", scanJobPodTemplateLabelsStr)

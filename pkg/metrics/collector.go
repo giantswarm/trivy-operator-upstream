@@ -32,6 +32,7 @@ const (
 	fixed_version     = "fixed_version"
 	resource          = "resource"
 	package_type      = "package_type"
+	pkg_path          = "pkg_path"
 	class             = "class"
 	severity          = "severity"
 	vuln_id           = "vuln_id"
@@ -46,6 +47,24 @@ const (
 	secret_rule_id  = "secret_rule_id"
 	secret_target   = "secret_target"
 	secret_title    = "secret_title"
+	//config audit
+	config_audit_id          = "config_audit_id"
+	config_audit_title       = "config_audit_title"
+	config_audit_description = "config_audit_description"
+	config_audit_category    = "config_audit_category"
+	config_audit_success     = "config_audit_success"
+	//rbac assessment
+	rbac_assessment_id          = "rbac_assessment_id"
+	rbac_assessment_title       = "rbac_assessment_title"
+	rbac_assessment_description = "rbac_assessment_description"
+	rbac_assessment_category    = "rbac_assessment_category"
+	rbac_assessment_success     = "rbac_assessment_success"
+	//infra assessment
+	infra_assessment_id          = "infra_assessment_id"
+	infra_assessment_title       = "infra_assessment_title"
+	infra_assessment_description = "infra_assessment_description"
+	infra_assessment_category    = "infra_assessment_category"
+	infra_assessment_success     = "infra_assessment_success"
 )
 
 type metricDescriptors struct {
@@ -58,24 +77,30 @@ type metricDescriptors struct {
 	complianceStatuses        map[string]func(vs v1alpha1.ComplianceSummary) int
 
 	// Labels
-	imageVulnLabels         []string
-	vulnIdLabels            []string
-	exposedSecretLabels     []string
-	exposedSecretInfoLabels []string
-	configAuditLabels       []string
-	rbacAssessmentLabels    []string
-	infraAssessmentLabels   []string
-	complianceLabels        []string
+	imageVulnLabels           []string
+	vulnIdLabels              []string
+	exposedSecretLabels       []string
+	exposedSecretInfoLabels   []string
+	configAuditLabels         []string
+	configAuditInfoLabels     []string
+	rbacAssessmentLabels      []string
+	rbacAssessmentInfoLabels  []string
+	infraAssessmentLabels     []string
+	infraAssessmentInfoLabels []string
+	complianceLabels          []string
 
 	// Descriptors
 	imageVulnDesc             *prometheus.Desc
 	vulnIdDesc                *prometheus.Desc
 	configAuditDesc           *prometheus.Desc
+	configAuditInfoDesc       *prometheus.Desc
 	exposedSecretDesc         *prometheus.Desc
 	exposedSecretInfoDesc     *prometheus.Desc
 	rbacAssessmentDesc        *prometheus.Desc
+	rbacAssessmentInfoDesc    *prometheus.Desc
 	clusterRbacAssessmentDesc *prometheus.Desc
 	infraAssessmentDesc       *prometheus.Desc
+	infraAssessmentInfoDesc   *prometheus.Desc
 	complianceDesc            *prometheus.Desc
 }
 
@@ -229,6 +254,7 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		resource,
 		severity,
 		package_type,
+		pkg_path,
 		class,
 		vuln_id,
 		vuln_title,
@@ -273,6 +299,19 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		severity,
 	}
 	configAuditLabels = append(configAuditLabels, dynamicLabels...)
+	configAuditInfoLabels := []string{
+		namespace,
+		name,
+		resource_kind,
+		resource_name,
+		config_audit_id,
+		config_audit_title,
+		config_audit_description,
+		config_audit_category,
+		config_audit_success,
+		severity,
+	}
+	configAuditInfoLabels = append(configAuditInfoLabels, dynamicLabels...)
 	rbacAssessmentLabels := []string{
 		namespace,
 		name,
@@ -281,6 +320,19 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		severity,
 	}
 	rbacAssessmentLabels = append(rbacAssessmentLabels, dynamicLabels...)
+	rbacAssessmentInfoLabels := []string{
+		namespace,
+		name,
+		resource_kind,
+		resource_name,
+		rbac_assessment_id,
+		rbac_assessment_title,
+		rbac_assessment_description,
+		rbac_assessment_category,
+		rbac_assessment_success,
+		severity,
+	}
+	rbacAssessmentInfoLabels = append(rbacAssessmentInfoLabels, dynamicLabels...)
 	infraAssessmentLabels := []string{
 		namespace,
 		name,
@@ -289,6 +341,19 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		severity,
 	}
 	infraAssessmentLabels = append(infraAssessmentLabels, dynamicLabels...)
+	infraAssessmentInfoLabels := []string{
+		namespace,
+		name,
+		resource_kind,
+		resource_name,
+		infra_assessment_id,
+		infra_assessment_title,
+		infra_assessment_description,
+		infra_assessment_category,
+		infra_assessment_success,
+		severity,
+	}
+	infraAssessmentInfoLabels = append(infraAssessmentInfoLabels, dynamicLabels...)
 
 	clusterComplianceLabels := []string{
 		title,
@@ -326,10 +391,22 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		configAuditLabels,
 		nil,
 	)
+	configAuditInfoDesc := prometheus.NewDesc(
+		prometheus.BuildFQName("trivy", "configaudits", "info"),
+		"Number of failing resource configuration auditing checks Info",
+		configAuditInfoLabels,
+		nil,
+	)
 	rbacAssessmentDesc := prometheus.NewDesc(
 		prometheus.BuildFQName("trivy", "role", "rbacassessments"),
 		"Number of rbac risky role assessment checks",
 		rbacAssessmentLabels,
+		nil,
+	)
+	rbacAssessmentInfoDesc := prometheus.NewDesc(
+		prometheus.BuildFQName("trivy", "rbacassessments", "info"),
+		"Number of rbac risky role assessment checks Info",
+		rbacAssessmentInfoLabels,
 		nil,
 	)
 	clusterRbacAssessmentDesc := prometheus.NewDesc(
@@ -342,6 +419,12 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		prometheus.BuildFQName("trivy", "resource", "infraassessments"),
 		"Number of failing k8s infra assessment checks",
 		infraAssessmentLabels,
+		nil,
+	)
+	infraAssessmentInfoDesc := prometheus.NewDesc(
+		prometheus.BuildFQName("trivy", "infraassessments", "info"),
+		"Number of failing k8s infra assessment checks Info",
+		infraAssessmentInfoLabels,
 		nil,
 	)
 	complianceDesc := prometheus.NewDesc(
@@ -358,23 +441,29 @@ func buildMetricDescriptors(config trivyoperator.ConfigData) metricDescriptors {
 		infraAssessmentSeverities: infraAssessmentSeverities,
 		complianceStatuses:        complainceStatuses,
 
-		imageVulnLabels:         imageVulnLabels,
-		vulnIdLabels:            vulnIdLabels,
-		exposedSecretLabels:     exposedSecretLabels,
-		exposedSecretInfoLabels: exposedSecretInfoLabels,
-		configAuditLabels:       configAuditLabels,
-		rbacAssessmentLabels:    rbacAssessmentLabels,
-		infraAssessmentLabels:   infraAssessmentLabels,
-		complianceLabels:        clusterComplianceLabels,
+		imageVulnLabels:           imageVulnLabels,
+		vulnIdLabels:              vulnIdLabels,
+		exposedSecretLabels:       exposedSecretLabels,
+		exposedSecretInfoLabels:   exposedSecretInfoLabels,
+		configAuditLabels:         configAuditLabels,
+		configAuditInfoLabels:     configAuditInfoLabels,
+		rbacAssessmentLabels:      rbacAssessmentLabels,
+		rbacAssessmentInfoLabels:  rbacAssessmentInfoLabels,
+		infraAssessmentLabels:     infraAssessmentLabels,
+		infraAssessmentInfoLabels: infraAssessmentInfoLabels,
+		complianceLabels:          clusterComplianceLabels,
 
 		imageVulnDesc:             imageVulnDesc,
 		vulnIdDesc:                vulnIdDesc,
 		configAuditDesc:           configAuditDesc,
+		configAuditInfoDesc:       configAuditInfoDesc,
 		exposedSecretDesc:         exposedSecretDesc,
 		exposedSecretInfoDesc:     exposedSecretInfoDesc,
 		rbacAssessmentDesc:        rbacAssessmentDesc,
+		rbacAssessmentInfoDesc:    rbacAssessmentInfoDesc,
 		clusterRbacAssessmentDesc: clusterRbacAssessmentDesc,
 		infraAssessmentDesc:       infraAssessmentDesc,
+		infraAssessmentInfoDesc:   infraAssessmentInfoDesc,
 		complianceDesc:            complianceDesc,
 	}
 }
@@ -408,8 +497,17 @@ func (c ResourcesMetricsCollector) Collect(metrics chan<- prometheus.Metric) {
 		c.collectExposedSecretsInfoReports(ctx, metrics, targetNamespaces)
 	}
 	c.collectConfigAuditReports(ctx, metrics, targetNamespaces)
+	if c.Config.MetricsConfigAuditInfo {
+		c.collectConfigAuditInfoReports(ctx, metrics, targetNamespaces)
+	}
 	c.collectRbacAssessmentReports(ctx, metrics, targetNamespaces)
+	if c.Config.MetricsRbacAssessmentInfo {
+		c.collectRbacAssessmentInfoReports(ctx, metrics, targetNamespaces)
+	}
 	c.collectInfraAssessmentReports(ctx, metrics, targetNamespaces)
+	if c.Config.MetricsInfraAssessmentInfo {
+		c.collectInfraAssessmentInfoReports(ctx, metrics, targetNamespaces)
+	}
 	c.collectClusterRbacAssessmentReports(ctx, metrics)
 	c.collectClusterComplianceReports(ctx, metrics)
 }
@@ -464,25 +562,23 @@ func (c ResourcesMetricsCollector) collectVulnerabilityIdReports(ctx context.Con
 				vulnLabelValues[7] = r.Report.Artifact.Tag
 				vulnLabelValues[8] = r.Report.Artifact.Digest
 				for i, label := range c.GetReportResourceLabels() {
-					vulnLabelValues[i+18] = r.Labels[label]
+					vulnLabelValues[i+19] = r.Labels[label]
 				}
 				var vulnList = make(map[string]bool)
 				for _, vuln := range r.Report.Vulnerabilities {
-					if vulnList[vuln.VulnerabilityID] {
-						continue
-					}
 					vulnList[vuln.VulnerabilityID] = true
 					vulnLabelValues[9] = vuln.InstalledVersion
 					vulnLabelValues[10] = vuln.FixedVersion
 					vulnLabelValues[11] = vuln.Resource
 					vulnLabelValues[12] = NewSeverityLabel(vuln.Severity).Label
 					vulnLabelValues[13] = vuln.PackageType
-					vulnLabelValues[14] = vuln.Class
-					vulnLabelValues[15] = vuln.VulnerabilityID
-					vulnLabelValues[16] = vuln.Title
-					vulnLabelValues[17] = ""
+					vulnLabelValues[14] = vuln.PkgPath
+					vulnLabelValues[15] = vuln.Class
+					vulnLabelValues[16] = vuln.VulnerabilityID
+					vulnLabelValues[17] = vuln.Title
+					vulnLabelValues[18] = ""
 					if vuln.Score != nil {
-						vulnLabelValues[17] = strconv.FormatFloat(*vuln.Score, 'f', -1, 64)
+						vulnLabelValues[18] = strconv.FormatFloat(*vuln.Score, 'f', -1, 64)
 					}
 					metrics <- prometheus.MustNewConstMetric(c.vulnIdDesc, prometheus.GaugeValue, float64(1), vulnLabelValues...)
 				}
@@ -588,6 +684,41 @@ func (c *ResourcesMetricsCollector) collectConfigAuditReports(ctx context.Contex
 	}
 }
 
+func (c *ResourcesMetricsCollector) collectConfigAuditInfoReports(ctx context.Context, metrics chan<- prometheus.Metric, targetNamespaces []string) {
+	reports := &v1alpha1.ConfigAuditReportList{}
+	labelValues := make([]string, len(c.configAuditInfoLabels))
+	for _, n := range targetNamespaces {
+		if err := c.List(ctx, reports, client.InNamespace(n)); err != nil {
+			c.Logger.Error(err, "failed to list configauditreports from API", "namespace", n)
+			continue
+		}
+		for _, r := range reports.Items {
+			if c.Config.MetricsConfigAuditInfo {
+				labelValues[0] = r.Namespace
+				labelValues[1] = r.Name
+				labelValues[2] = r.Labels[trivyoperator.LabelResourceKind]
+				labelValues[3] = r.Labels[trivyoperator.LabelResourceName]
+				for _, config := range r.Report.Checks {
+					labelValues[4] = config.ID
+					labelValues[5] = config.Title
+					labelValues[6] = config.Description
+					labelValues[7] = config.Category
+					labelValues[8] = strconv.FormatBool(config.Success)
+					labelValues[9] = NewSeverityLabel(config.Severity).Label
+
+					for i, label := range c.GetReportResourceLabels() {
+						labelValues[i+10] = r.Labels[label]
+					}
+
+					metrics <- prometheus.MustNewConstMetric(c.configAuditInfoDesc, prometheus.GaugeValue, float64(1), labelValues...)
+
+				}
+
+			}
+		}
+	}
+}
+
 func (c *ResourcesMetricsCollector) collectRbacAssessmentReports(ctx context.Context, metrics chan<- prometheus.Metric, targetNamespaces []string) {
 	reports := &v1alpha1.RbacAssessmentReportList{}
 	labelValues := make([]string, len(c.rbacAssessmentLabels))
@@ -609,6 +740,38 @@ func (c *ResourcesMetricsCollector) collectRbacAssessmentReports(ctx context.Con
 	}
 }
 
+func (c *ResourcesMetricsCollector) collectRbacAssessmentInfoReports(ctx context.Context, metrics chan<- prometheus.Metric, targetNamespaces []string) {
+	reports := &v1alpha1.RbacAssessmentReportList{}
+	labelValues := make([]string, len(c.rbacAssessmentInfoLabels))
+	for _, n := range targetNamespaces {
+		if err := c.List(ctx, reports, client.InNamespace(n)); err != nil {
+			c.Logger.Error(err, "failed to list rbacAssessment from API", "namespace", n)
+			continue
+		}
+		for _, r := range reports.Items {
+			if c.Config.MetricsRbacAssessmentInfo {
+				labelValues[0] = r.Namespace
+				labelValues[1] = r.Name
+				labelValues[2] = r.Labels[trivyoperator.LabelResourceKind]
+				labelValues[3] = r.Labels[trivyoperator.LabelResourceName]
+				for _, rbac := range r.Report.Checks {
+					labelValues[4] = rbac.ID
+					labelValues[5] = rbac.Title
+					labelValues[6] = rbac.Description
+					labelValues[7] = rbac.Category
+					labelValues[8] = strconv.FormatBool(rbac.Success)
+					labelValues[9] = NewSeverityLabel(rbac.Severity).Label
+					for i, label := range c.GetReportResourceLabels() {
+						labelValues[i+10] = r.Labels[label]
+					}
+
+					metrics <- prometheus.MustNewConstMetric(c.rbacAssessmentInfoDesc, prometheus.GaugeValue, float64(1), labelValues...)
+				}
+			}
+		}
+	}
+}
+
 func (c *ResourcesMetricsCollector) collectInfraAssessmentReports(ctx context.Context, metrics chan<- prometheus.Metric, targetNamespaces []string) {
 	reports := &v1alpha1.InfraAssessmentReportList{}
 	labelValues := make([]string, len(c.infraAssessmentLabels))
@@ -626,6 +789,38 @@ func (c *ResourcesMetricsCollector) collectInfraAssessmentReports(ctx context.Co
 				labelValues[i+5] = r.Labels[label]
 			}
 			c.populateInfraAssessmentValues(labelValues, c.infraAssessmentDesc, r.Report.Summary, metrics, 4)
+		}
+	}
+}
+
+func (c *ResourcesMetricsCollector) collectInfraAssessmentInfoReports(ctx context.Context, metrics chan<- prometheus.Metric, targetNamespaces []string) {
+	reports := &v1alpha1.RbacAssessmentReportList{}
+	labelValues := make([]string, len(c.infraAssessmentInfoLabels))
+	for _, n := range targetNamespaces {
+		if err := c.List(ctx, reports, client.InNamespace(n)); err != nil {
+			c.Logger.Error(err, "failed to list infraAssessment from API", "namespace", n)
+			continue
+		}
+		for _, r := range reports.Items {
+			if c.Config.MetricsInfraAssessmentInfo {
+				labelValues[0] = r.Namespace
+				labelValues[1] = r.Name
+				labelValues[2] = r.Labels[trivyoperator.LabelResourceKind]
+				labelValues[3] = r.Labels[trivyoperator.LabelResourceName]
+				for _, infra := range r.Report.Checks {
+					labelValues[4] = infra.ID
+					labelValues[5] = infra.Title
+					labelValues[6] = infra.Description
+					labelValues[7] = infra.Category
+					labelValues[8] = strconv.FormatBool(infra.Success)
+					labelValues[9] = NewSeverityLabel(infra.Severity).Label
+					for i, label := range c.GetReportResourceLabels() {
+						labelValues[i+10] = r.Labels[label]
+					}
+
+					metrics <- prometheus.MustNewConstMetric(c.infraAssessmentInfoDesc, prometheus.GaugeValue, float64(1), labelValues...)
+				}
+			}
 		}
 	}
 }
@@ -693,10 +888,13 @@ func (c ResourcesMetricsCollector) Describe(descs chan<- *prometheus.Desc) {
 	descs <- c.imageVulnDesc
 	descs <- c.vulnIdDesc
 	descs <- c.configAuditDesc
+	descs <- c.configAuditInfoDesc
 	descs <- c.exposedSecretDesc
 	descs <- c.exposedSecretInfoDesc
 	descs <- c.rbacAssessmentDesc
+	descs <- c.rbacAssessmentInfoDesc
 	descs <- c.infraAssessmentDesc
+	descs <- c.infraAssessmentInfoDesc
 	descs <- c.clusterRbacAssessmentDesc
 	descs <- c.complianceDesc
 }
